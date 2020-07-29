@@ -23,51 +23,103 @@ for(let i = 0; i < removeBasket.length; i++) {
     });
   };
 
+  let products = [];
+
+  for(let i = 0; i < camera.length; i++){
+    products.push(camera[i].id)
+  }
+
+  console.log(products);
+
 //Affiche le prix total du panier
 prixTotal.innerHTML = somme;
 
 //Création d'une variable afin de récupérer l'id des caméras(sera transformer en boucle for, cette variable sert actuellement à tester l'envoie au serveur)
-let products = camera[0].id;
-
 let btnForm = document.getElementById("envoieDuFormulaire");
+
+function Verification (){
+
+  //données de l'utilisateur
+  let firstName = document.getElementById("nom").value;
+  let lastName =  document.getElementById("prénom").value;
+  let address = document.getElementById("adresse").value;
+  let city = document.getElementById("ville").value;
+  let email = document.getElementById("email").value;
+
+  // RegExp
+  let regExpMail = /.+@.+\..+/;
+  let regExpString = /^[A-Z]{1}[a-z]/;
+  let regExpAdress = /^[^@&"()!_$*€£`%+=\/;?#]+$/;
+
+  //Test des données de l'utilisateur
+  if (regExpString.test(firstName) == false) {
+    alert("Votre nom doit commencer par une majuscule suivis de minuscules");
+    return false;
+  } else if (regExpString.test(lastName) == false) {
+    alert("Votre prénom doit commencer par une majuscule suivis de minuscules");
+    return false;
+  } else if (regExpMail.test(email) == false) {
+    alert("Votre email doit être au format exemple@mail.com");
+    return false;
+  } else if (regExpAdress.test(address) == false) {
+    alert(
+      `Votre adresse contient un ou plusieurs des caractères interdits suivants : ` +
+        '[^@&"()!_$*€£`%+=/;?#]' +
+        " ou n'est pas renseignée."
+    );
+    return false;
+  } else if (regExpString.test(city) == false) {
+    alert(
+      "Le nom de votre ville doit commencer par une majuscule suivis de minuscules"
+    );
+    return false;
+  } else {
+    return true;
+  }
+};
 
 // Au clic, envoie les éléments du formulaire et du panier au serveur
 btnForm.addEventListener("click", function (event) {
     event.preventDefault();
 
+    if (Verification() == true && localStorage.getItem('bucket').length > 2){
       // Création de l'objet contact contenant les coordonnées de l'utilisateur
-      let contact = {
-        firstName: document.getElementById("nom").value,
-        lastName: document.getElementById("prénom").value,
-        address: document.getElementById("adresse").value,
-        city: document.getElementById("ville").value,
-        email: document.getElementById("email").value,
+      const contact = {
+        "firstName": document.getElementById("nom").value,
+        "lastName": document.getElementById("prénom").value,
+        "address": document.getElementById("adresse").value,
+        "city": document.getElementById("ville").value,
+        "email": document.getElementById("email").value,
       };
 
-      // Création de l'objet à envoyer à l'API
-      let objet = {
+      const order = {
         contact,
-        products,
+        products
       };
+      
+      console.log(order);
 
       // Conversion en JSON
-      let objetRequest = JSON.stringify(objet);
+      // let objetRequest = JSON.stringify(contact, products);
 
       // Envoi de l'objet
-      var request = new XMLHttpRequest();
-      request.open("POST", "http://localhost:3000/api/cameras/order");
-      request.setRequestHeader("Content-Type", "application/json");
-      request.send(JSON.stringify(objetRequest));
+      let request = new XMLHttpRequest();
+      request.open("POST", "http://localhost:5500/api/cameras/order");
 
-      //récupération des données envoyés au serveur
+      // récupération des données envoyés au serveur
       request.onreadystatechange = function () {
         if (this.readyState == XMLHttpRequest.DONE) {
           console.log(this.responseText);
           localStorage.setItem("order", this.responseText);
           console.log(localStorage.getItem('order'));
-          
+          window.location.href = "confirmation.html";
         } else {
           localStorage.setItem('order', "KO");
         }
       };
+      request.setRequestHeader("Content-Type", "application/json");
+      request.send(JSON.stringify(order));
+    }
 });
+
+ 

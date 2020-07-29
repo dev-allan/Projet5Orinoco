@@ -6,7 +6,7 @@ let id = params.get('id');
 
 let Request = new XMLHttpRequest();
 
-Request.open('GET', "http://localhost:3000/api/cameras/"+id, true)
+Request.open('GET', "http://localhost:5500/api/cameras/"+id, true)
 Request.onload = function() {
   let theData = JSON.parse(Request.responseText);
   renderHTML(theData);
@@ -33,31 +33,40 @@ function renderHTML(data) {
       </div>`;
 
     for (let i = 0; i < data.lenses.length; i++) {
-      detailDuProduit.innerHTML +=  `<input type="radio" name="lentille" value="${data.lenses[i]}" id="${data.lenses[i]}" required /> <label for="${data.lenses[i]}">${data.lenses[i]}</label><br />`
+      detailDuProduit.innerHTML +=  `<input type="radio" name="lentille" id="lentilleChecked" value="${data.lenses[i]}" id="${data.lenses[i]}" /> <label for="${data.lenses[i]}">${data.lenses[i]}</label><br />`
     };
 
-    detailDuProduit.innerHTML += `<button type="submit" id="button" data-lentille="">Ajouter au panier</button>`;
+    detailDuProduit.innerHTML += `<button type="submit" id="button">Ajouter au panier</button>`;
 
     let button = document.getElementById('button');
 
     button.addEventListener("click", function(event){
       event.preventDefault();
 
+      let lentille = document.querySelector('input[name=lentille]:checked');
+
+      if (lentille == null){
+        alert("Vous devez chosir une lentille avant d'ajouter votre produit au panier");
+        console.log(lentille.checked);
+      };
+
       let camera = {
         id : id,
         nom : data.name,
         description : data.description,
         prix : data.price/100,
-        lentille : document.querySelector('input[name=lentille]:checked').value,
+        lentille : lentille.value,
       };
       
       if (localStorage.getItem("bucket")) {
         let parse = JSON.parse(localStorage.getItem("bucket"));
         parse.push(camera);
         localStorage.bucket = JSON.stringify(parse);
+        alert("Votre produit a été ajouté au panier");
       } else {
         indexCamera.push(camera);
         localStorage.setItem("bucket", JSON.stringify(indexCamera));
+        alert("Votre produit a été ajouté au panier");
       }
     });
 };

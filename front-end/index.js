@@ -3,7 +3,7 @@ const img = document.querySelector('img');
 
 let Resquest = new XMLHttpRequest();
 
-Resquest.open('GET', 'http://localhost:3000/api/cameras')
+Resquest.open('GET', 'http://localhost:5500/api/cameras')
 Resquest.onload = function() {
   let theData = JSON.parse(Resquest.responseText);
   renderHTML(theData);
