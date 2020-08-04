@@ -1,17 +1,18 @@
 const listCamera = document.getElementById('listCamera');
 const img = document.querySelector('img');
 
-let Resquest = new XMLHttpRequest();
+//Création de la requête GET sur l'API cameras
+let Request = new XMLHttpRequest();
 
-Resquest.open('GET', 'http://localhost:5500/api/cameras')
-Resquest.onload = function() {
-  let theData = JSON.parse(Resquest.responseText);
+Request.open('GET', 'http://localhost:5500/api/cameras');
+Request.onload = function() {
+  let theData = JSON.parse(Request.responseText);
   renderHTML(theData);
 };
   
-Resquest.send();
+Request.send();
 
-
+//Création du rendu HTML afin de faire apparaitre les informations des caméras de l'API
 function renderHTML(data) {
   for (let i = 0; i < data.length; i++) {
     listCamera.innerHTML += `

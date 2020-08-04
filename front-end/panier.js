@@ -34,7 +34,7 @@ for(let i = 0; i < removeBasket.length; i++) {
 //Affiche le prix total du panier
 prixTotal.innerHTML = somme;
 
-//Création d'une variable afin de récupérer l'id des caméras(sera transformer en boucle for, cette variable sert actuellement à tester l'envoie au serveur)
+//Création d'une variable afin de récupérer l'id des caméras
 let btnForm = document.getElementById("envoieDuFormulaire");
 
 function Verification (){
@@ -98,9 +98,6 @@ btnForm.addEventListener("click", function (event) {
       };
       
       console.log(order);
-
-      // Conversion en JSON
-      // let objetRequest = JSON.stringify(contact, products);
 
       // Envoi de l'objet
       let request = new XMLHttpRequest();

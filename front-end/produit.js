@@ -6,6 +6,7 @@ let id = params.get('id');
 
 let Request = new XMLHttpRequest();
 
+//Récupération de l'id sur l'URL afin de faire apparaitre les détails de la caméra séléctionnée 
 Request.open('GET', "http://localhost:5500/api/cameras/"+id, true)
 Request.onload = function() {
   let theData = JSON.parse(Request.responseText);
@@ -14,10 +15,11 @@ Request.onload = function() {
   
 Request.send();
 
+//Création d'une variable qui contiendra les informations des caméras ajouté au panier et qui sera envoyé dans le localStorage
 let indexCamera = [];
 
 function renderHTML(data) {
-
+//Création du rendu HTML pour faire apparaitre les informations de la caméra sélectionnée
     detailDuProduit.innerHTML += `<div class="cards__item__thumb">
       <img src = "${data.imageUrl}" alt = "image d'un appareil photo ancien" style="heigth:500px; width:500px;"/>
       </div>
@@ -31,7 +33,7 @@ function renderHTML(data) {
         </a>
       </div>
       </div>`;
-
+// Création d'une boucle for pour faire apparaitre les options de lentille de la caméra sélectionnée
     for (let i = 0; i < data.lenses.length; i++) {
       detailDuProduit.innerHTML +=  `<input type="radio" name="lentille" id="lentilleChecked" value="${data.lenses[i]}" id="${data.lenses[i]}" /> <label for="${data.lenses[i]}">${data.lenses[i]}</label><br />`
     };
@@ -39,7 +41,7 @@ function renderHTML(data) {
     detailDuProduit.innerHTML += `<button type="submit" id="button">Ajouter au panier</button>`;
 
     let button = document.getElementById('button');
-
+//Evénement pour le bouton "ajouter au panier" afin d'ajouter au localStorage la caméra avec l'option sélectionnée
     button.addEventListener("click", function(event){
       event.preventDefault();
 
