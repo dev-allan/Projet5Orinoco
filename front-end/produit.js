@@ -1,19 +1,15 @@
 const detailDuProduit = document.getElementById('descriptionCamera');
-const img = document.querySelector('img');
 
 let params = new URLSearchParams(document.location.search);
 let id = params.get('id');
 
-let Request = new XMLHttpRequest();
-
-//Récupération de l'id sur l'URL afin de faire apparaitre les détails de la caméra séléctionnée 
-Request.open('GET', "http://localhost:5500/api/cameras/"+id, true)
-Request.onload = function() {
-  let theData = JSON.parse(Request.responseText);
-  renderHTML(theData);
-};
-  
-Request.send();
+fetch("http://localhost:5500/api/cameras/"+id)
+.then(function(response) {
+  response.text().then(function(text) {
+    renderHTML(JSON.parse(text));
+    });
+})
+.catch(error => alert("Erreur : " + error));
 
 //Création d'une variable qui contiendra les informations des caméras ajouté au panier et qui sera envoyé dans le localStorage
 let indexCamera = [];
